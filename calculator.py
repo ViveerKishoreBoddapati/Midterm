@@ -1,9 +1,8 @@
-import logging  # <-- Make sure this is included
+import logging
 import os
 import pandas as pd
-import importlib
 
-# Logging configuration
+# Set up logging
 log_level = os.getenv('LOG_LEVEL', 'INFO').upper()
 logging.basicConfig(
     level=getattr(logging, log_level, logging.INFO),
@@ -24,4 +23,8 @@ def divide(a, b):
     if b == 0:
         return "Error: Division by zero"
     return a / b
+
+# Ensure this code runs only when executed directly, not during import
+if __name__ == "__main__":
+    print("Calculator module loaded.")
 
