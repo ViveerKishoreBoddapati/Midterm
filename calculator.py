@@ -1,19 +1,27 @@
-import importlib
+import pandas as pd
 
-def load_plugin(plugin_name, func_name, arg):
-    """Loads and executes a function from a plugin."""
+# Initialize an empty DataFrame to store history
+history = pd.DataFrame(columns=['Operation', 'Operand1', 'Operand2', 'Result'])
+
+def add_to_history(operation, op1, op2, result):
+    global history
+    new_entry = pd.DataFrame([[operation, op1, op2, result]], 
+                             columns=['Operation', 'Operand1', 'Operand2', 'Result'])
+    history = pd.concat([history, new_entry], ignore_index=True)
+
+def save_history():
+    history.to_csv('calculation_history.csv', index=False)
+
+def load_history():
+    global history
     try:
-        # Dynamically import the plugin module
-        plugin = importlib.import_module(f'plugins.{plugin_name}')
-        # Get the function from the plugin
-        func = getattr(plugin, func_name)
-        # Call the function with the argument
-        return func(arg)
-    except (ModuleNotFoundError, AttributeError) as e:
-        print(f"Error loading plugin: {e}")
-        return None
+        history = pd.read_csv('calculation_history.csv')
+        print("History loaded successfully.")
+    except FileNotFoundError:
+        print("No previous history found.")
 
-# Example usage within REPL
-if __name__ == "__main__":
-    print(load_plugin('square', 'square', 5))  # Should print 25
+def clear_history():
+    global history
+    history = pd.DataFrame(columns=['Operation', 'Operand1', 'Operand2', 'Result'])
+    print("History cleared.")
 
